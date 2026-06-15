@@ -20,8 +20,9 @@ export function connectWS(
     wsInstance.close()
     wsInstance = null
   }
-
-  const url = `ws://localhost:8000/ws/simulation/${simId}`
+  const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000'
+  const WS_BASE = API_BASE.replace('http', 'ws')  // http:// → ws://  或 https:// → wss://
+  const url = `${WS_BASE}/ws/simulation/${simId}`
   const ws = new WebSocket(url)
   wsInstance = ws
 
