@@ -31,9 +31,9 @@ app.add_middleware(
 app.include_router(api_router)  # 把 api/routes.py 里定义的路由接口加进来
 
 # 挂载静态文件（前端），托管前端
-#frontend_path = Path(__file__).parent.parent.parent / "frontend"
-#if frontend_path.exists():
-    #app.mount("/", StaticFiles(directory=str(frontend_path), html=True), name="frontend")
+frontend_path = Path(__file__).parent.parent.parent / "frontend"
+if frontend_path.exists():
+    app.mount("/", StaticFiles(directory=str(frontend_path), html=True), name="frontend")
 
 # 健康检查接口
 @app.get("/health")
@@ -42,4 +42,6 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    import os
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
