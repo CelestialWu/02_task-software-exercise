@@ -46,7 +46,9 @@ class SimulationManager:
 sim_manager = SimulationManager()
 
 
-@router.post("/api/simulation/create")
+# ========== REST API 路由（去掉 /api 前缀，由 main.py 统一添加） ==========
+
+@router.post("/simulation/create")
 async def create_simulation(config: dict = Body(...), user_id: int = Query(1)):
     """创建仿真"""
     try:
@@ -59,7 +61,7 @@ async def create_simulation(config: dict = Body(...), user_id: int = Query(1)):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/api/simulation/{sim_id}/state")
+@router.get("/simulation/{sim_id}/state")
 async def get_simulation_state(sim_id: str):
     """获取仿真当前状态"""
     simulator = sim_manager.get_simulation(sim_id)
@@ -69,7 +71,7 @@ async def get_simulation_state(sim_id: str):
     return simulator.get_state_for_frontend()
 
 
-@router.get("/api/simulation/{sim_id}/statistics")
+@router.get("/simulation/{sim_id}/statistics")
 async def get_simulation_statistics(sim_id: str):
     """获取仿真统计数据"""
     if not sim_manager.get_simulation(sim_id):
@@ -79,7 +81,7 @@ async def get_simulation_statistics(sim_id: str):
     return stats
 
 
-@router.post("/api/simulation/{sim_id}/export")
+@router.post("/simulation/{sim_id}/export")
 async def export_simulation(sim_id: str, format: str = "csv"):
     """导出仿真数据"""
     if not sim_manager.get_simulation(sim_id):
@@ -92,6 +94,8 @@ async def export_simulation(sim_id: str, format: str = "csv"):
     else:
         raise HTTPException(status_code=400, detail="Unsupported format")
 
+
+# ========== WebSocket 路由（不加 /api 前缀，由前端直接连接） ==========
 
 @router.websocket("/ws/simulation/{sim_id}")
 async def websocket_endpoint(websocket: WebSocket, sim_id: str):
@@ -124,7 +128,7 @@ async def websocket_endpoint(websocket: WebSocket, sim_id: str):
                     
                     state = simulator.get_state_for_frontend()
                     
-                    # 保存快照（不再传 user_id，从配置表自动获取）
+                    # 保存快照
                     try:
                         sim_manager.db_manager.save_snapshot(sim_id, snapshot)
                         print(f"[WebSocket] Snapshot saved successfully")

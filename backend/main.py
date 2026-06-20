@@ -1,7 +1,7 @@
 import sys
 import io
 from pathlib import Path
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -22,13 +22,32 @@ app = FastAPI(
 # 添加CORS中间件
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],        # 允许所有域名访问（开发环境用）
-    allow_credentials=True,     # 允许携带 cookie
-    allow_methods=["*"],        # 允许所有 HTTP 方法
-    allow_headers=["*"],        # 允许所有请求头
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-app.include_router(api_router)  # 把 api/routes.py 里定义的路由接口加进来
+# 注册 REST API 路由
+app.include_router(api_router)
+
+# ============================================================
+# 测试 WebSocket 端点（直接定义在 app 上，绕过 router）
+# ============================================================
+@app.websocket("/ws/simulation/{sim_id}")
+async def websocket_test(websocket: WebSocket, sim_id: str):
+    await websocket.accept()
+    print(f"[WebSocket] Test connection accepted for sim_id: {sim_id}")
+    try:
+        while True:
+            data = await websocket.receive_text()
+            print(f"[WebSocket] Received: {data}")
+            # 简单回显，用于测试
+            await websocket.send_text(f"Echo: {data}")
+    except WebSocketDisconnect:
+        print(f"[WebSocket] Test client disconnected")
+
+# ============================================================
 
 # 挂载静态文件（前端），托管前端
 frontend_path = Path(__file__).parent.parent.parent / "frontend"

@@ -1,5 +1,6 @@
 // Backend state types matching GET /api/simulation/{sim_id}/state
 
+//定义后端发来的json格式拆解
 export interface BackendState {
   timestep: number
   windows: WindowState[]

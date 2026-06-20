@@ -11,7 +11,7 @@ import { Person } from './Person'
 import { PathLine } from './PathLine'
 import { Decorations } from './Decorations'
 import { useEffect, useMemo } from 'react'
-
+//从Zustand读数据，react钩子
 export function CafeteriaScene() {
   const layout = useSimulationStore(s => s.layout)
   const persons = useSimulationStore(s => s.persons)
@@ -21,7 +21,8 @@ export function CafeteriaScene() {
   const activatingWindows = useSimulationStore(s => s.activatingWindows)
   const buildLayout = useSimulationStore(s => s.buildLayout)
   const layoutReady = useSimulationStore(s => s.layoutReady)
-
+  //读数据
+  //默认参数
   useEffect(() => {
     if (!layoutReady) {
       buildLayout(4, 8, 10, 5, 6, 4)
@@ -30,6 +31,7 @@ export function CafeteriaScene() {
 
   if (!layout) return null
 
+  // 对象转化成数组
   const personList = Object.values(persons)
   const pathList = Object.values(paths).filter(p => p.active)
 

@@ -22,6 +22,7 @@ export function connectWS(
   }
   const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000'
   const WS_BASE = API_BASE.replace('http', 'ws')  // http:// → ws://  或 https:// → wss://
+  // 去掉 /api，因为后端 routes.py 里没有加 /api 前缀
   const url = `${WS_BASE}/ws/simulation/${simId}`
   const ws = new WebSocket(url)
   wsInstance = ws

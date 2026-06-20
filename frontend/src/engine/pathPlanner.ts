@@ -100,6 +100,7 @@ function buildCollisionGrid(layout: LayoutResult): Grid {
   return grid
 }
 
+//世界-格子坐标
 function worldToGrid(x: number, z: number, grid: Grid): { gx: number; gz: number } {
   return { gx: Math.round(x / grid.cellSize), gz: Math.round(z / grid.cellSize) }
 }

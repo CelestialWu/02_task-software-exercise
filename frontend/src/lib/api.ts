@@ -10,21 +10,21 @@ const api = axios.create({
 })
 
 export const simulationAPI = {
-  // 创建仿真
+  // 创建仿真 - 注意路径没有多余的 /api
   createSimulation: (config: any, userId: number) =>
-    api.post('/api/simulation/create', config, { params: { user_id: userId } }),
+    api.post('/simulation/create', config, { params: { user_id: userId } }),
 
   // 获取仿真状态
   getSimulationState: (simId: string) =>
-    api.get(`/api/simulation/${simId}/state`),
+    api.get(`/simulation/${simId}/state`),
 
   // 获取仿真统计数据
   getStatistics: (simId: string) =>
-    api.get(`/api/simulation/${simId}/statistics`),
+    api.get(`/simulation/${simId}/statistics`),
 
   // 导出仿真数据
   exportSimulation: (simId: string, format: string = 'csv') =>
-    api.post(`/api/simulation/${simId}/export`, { format }),
+    api.post(`/simulation/${simId}/export`, { format }),
 
   // 健康检查
   healthCheck: () =>
